@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans, DBSCAN
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+import streamlit as st
 
 # Load dataset
 df = pd.read_csv("SpotifyFeatures.csv")
@@ -78,3 +79,17 @@ def recommend_similar(track_name, df, features, cluster_col='KMeans_Cluster', to
 # Example usage
 print("\nSimilar songs to 'Blinding Lights':")
 print(recommend_similar('Blinding Lights', df_clustered, features))
+
+try:
+    yt_results = ytmusic.search(
+    f"{row['track_name']} {row['artist_name']}", filter="songs"
+    )
+    if yt_results:
+        video_id = yt_results[0]["videoId"]
+        audio_url = get_audio_url(video_id)
+        st.audio(audio_url, format="audio/mp4")
+    else:
+        st.info("No YouTube result.")
+except Exception as e:
+    st.warning("🎧 Error in KMeans YouTube audio.")
+
