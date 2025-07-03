@@ -3,11 +3,9 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
 
-# Load your dataset
-@st.cache_data
-def load_data():
-    df = pd.read_csv("spotify_tracks.csv")
-    return df
+
+# Load dataset
+df = pd.read_csv("SpotifyFeatures.csv")
 
 # Preprocess and fit similarity matrix
 @st.cache_resource
