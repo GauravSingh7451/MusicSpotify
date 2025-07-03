@@ -80,16 +80,24 @@ def recommend_similar(track_name, df, features, cluster_col='KMeans_Cluster', to
 print("\nSimilar songs to 'Blinding Lights':")
 print(recommend_similar('Blinding Lights', df_clustered, features))
 
-try:
-    yt_results = ytmusic.search(
-    f"{row['track_name']} {row['artist_name']}", filter="songs"
-    )
-    if yt_results:
-        video_id = yt_results[0]["videoId"]
-        audio_url = get_audio_url(video_id)
-        st.audio(audio_url, format="audio/mp4")
-    else:
-        st.info("No YouTube result.")
-except Exception as e:
-    st.warning("🎧 Error in KMeans YouTube audio.")
+# Streamlit UI
+def main():
+    st.title("🎧 Spotify Music Recommender")
+    df = load_data()
+    sim_matrix, df = preprocess(df)
+
+    song_list = df['name'].drop_duplicates().sort_values().tolist()
+    song_choice = st.selectbox("Choose a Song", song_list)
+
+    if st.button("Recommend"):
+        results = recommend(song_choice, df, sim_matrix)
+        if results:
+            st.write("### Recommended Songs:")
+            for r in results:
+                st.write(f"- {r}")
+        else:
+            st.warning("No recommendations found.")
+
+if __name__ == "__main__":
+    main()
 
